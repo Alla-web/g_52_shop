@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="add-tag-0.6.0" author="Alla">
+        <!--        ссылается на версию, до которой потом можно откатить БД-->
+        <tagDatabase tag="v.0.6.0"/>
+    </changeSet>
+
+    <!--        ссылается на ченч-лог/ги в этой версии-->
+    <include file="add-column-image-to-product.xml" relativeToChangelogFile="true"/>
+
+
+</databaseChangeLog>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <!--    навесили внешние ключи для таблицам user и role-->
+    <changeSet id="add-foreign-keys-to-user-role" author="Alla">
+
+        <!-- baseTableName="user-role" - таблица, для которой создаём внешний ключ-->
+        <!-- baseColumnNames="user_id" - название колонки -->
+        <!-- constraintName="fk-user_role_to_user" - имя внешнего ключа (должно быть уникальным внутри БД) -->
+        <!-- referencedTableName="user" - название таблицы, на которую ссылается -->
+        <!-- referencedColumnNames="id" - название колонки, на которую ссылается -->
+
+        <addForeignKeyConstraint
+                baseTableName="user_role"
+                baseColumnNames="user_id"
+                constraintName="fk-user_role_to_user"
+                referencedTableName="user"
+                referencedColumnNames="id" />
+
+        <addForeignKeyConstraint
+                baseTableName="user_role"
+                baseColumnNames="role_id"
+                constraintName="fk-user_role_to_role"
+                referencedTableName="role"
+                referencedColumnNames="id" />
+
+    </changeSet>
+
+</databaseChangeLog>

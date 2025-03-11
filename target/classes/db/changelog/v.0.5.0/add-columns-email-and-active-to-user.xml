@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <!--    что конкретно нужно сделать -->
+    <changeSet id="add-columns-email-and-active-to-user" author="Alla">
+
+        <!--    нужно изменить таблицу с конкретными полями -->
+        <addColumn tableName="user">
+
+            <!--    если nullable="false" то обязательно defaultValue="test" -->
+            <column name="email" type="varchar(64)" defaultValue="test">
+                <constraints nullable="false"/>
+            </column>
+
+            <!--    если nullable="false" то обязательно defaultValue="test" -->
+            <column name="active" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+
+        </addColumn>
+
+    </changeSet>
+  
+</databaseChangeLog>
