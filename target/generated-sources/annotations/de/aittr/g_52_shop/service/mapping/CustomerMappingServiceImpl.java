@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-03-11T15:44:54+0100",
+    date = "2025-03-12T10:17:10+0100",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.13 (Amazon.com Inc.)"
 )
 @Component
@@ -41,7 +41,6 @@ public class CustomerMappingServiceImpl implements CustomerMappingService {
         Customer customer = new Customer();
 
         customer.setName( dto.getName() );
-        customer.setCart( cartMappingService.mapDtoToEntity( dto.getCart() ) );
 
         customer.setActive( true );
 

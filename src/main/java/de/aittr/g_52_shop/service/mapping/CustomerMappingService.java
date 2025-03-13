@@ -14,6 +14,7 @@ public interface CustomerMappingService {
     CustomerDto mapEntityToDto(Customer entity);
 
     @Mapping(target = "id", ignore = true) //игнорируем поле id
+    @Mapping(target = "cart", ignore = true) //игнорируем поле cart
     @Mapping(target = "active", constant = "true") //уст-м в поле active вегда true
     Customer mapDtoToEntity(CustomerDto dto);
 

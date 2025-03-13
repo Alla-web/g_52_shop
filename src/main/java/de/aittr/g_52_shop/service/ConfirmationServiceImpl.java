@@ -4,6 +4,7 @@ import de.aittr.g_52_shop.domain.entity.ConfirmationCode;
 import de.aittr.g_52_shop.domain.entity.User;
 import de.aittr.g_52_shop.repository.ConfirmationCodeRepository;
 import de.aittr.g_52_shop.service.interfaces.ConfirmationService;
+import jakarta.transaction.Transactional;
 import org.aspectj.apache.bcel.classfile.Code;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ public class ConfirmationServiceImpl implements ConfirmationService {
     }
 
     //метод для подтверждения регистрации юзера (ДЗ 18)
+    @Transactional
     @Override
     public boolean confirmRegistration(String code) {
 
@@ -55,13 +57,12 @@ public class ConfirmationServiceImpl implements ConfirmationService {
 
         //проверяем состояние полученного кода (истёт или нет)
         if (confirmationCode.getExpired().isBefore(LocalDateTime.now())){
-            repository.delete(confirmationCode);
+            repository.delete(confirmationCode); //удаляем код после подтверждения
         }
 
         //получаем пользователя и активируем его
         User user = confirmationCode.getUser();
         user.setActive(true); //устанавливаем статус активный
-        repository.delete(confirmationCode); //удаляем код после подтверждения
 
         return true;
     }

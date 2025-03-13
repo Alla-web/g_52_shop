@@ -20,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity //разрешать/запрещать методы для пользователей с разными ролями
 public class SecurityConfig {
 
+    private final String ADMIN_ROLE = "ADMIN";
+    private final String USER_ROLE = "USER";
+
     private final TokenFilter filter;
 
     public SecurityConfig(TokenFilter filter) {
@@ -53,9 +56,11 @@ public class SecurityConfig {
                                 //изменить продукт - доспупно только админу
                                 .requestMatchers(HttpMethod.GET, "/products/all").permitAll()
                                 //доступ на енд-поинт products - только админу и авторизированному юзеру
-                                .requestMatchers(HttpMethod.GET, "/products/").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.GET, "/products/").hasAnyRole(ADMIN_ROLE, USER_ROLE)
                                 //отправлять запросы на добавление новых товаров - доступно только админу
-                                .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/products").hasRole(ADMIN_ROLE)
+                                .requestMatchers(HttpMethod.POST, "/customers").hasRole(ADMIN_ROLE)
+                                .requestMatchers(HttpMethod.GET, "/customers/**").permitAll()
                                 //правило применяется только к HTTP POST-запросам,
                                 // которые отправляются на /auth/login и /auth/refresh.
                                 .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
@@ -63,9 +68,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/register/**").permitAll()
                                 //
                                 .requestMatchers(HttpMethod.GET, "/hello").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/files").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/files").hasRole(ADMIN_ROLE)
+                                .requestMatchers(HttpMethod.PUT, "/customers/**").hasAnyRole(ADMIN_ROLE, USER_ROLE)
                                 //ко всем настройкам имеют доступ только авторизированные, кто залогинился
-                                .anyRequest().authenticated()
+                                //.anyRequest().authenticated() //остальные операции разрешены все авторизированным юзерам
                         //настройка, разрешающая всем доступ с запросами без авторизации
                         //.anyRequest().permitAll()
                         //build() позволяет сконфигурировать объект SecurityFilterChain для фильтрации HTTP-запросов

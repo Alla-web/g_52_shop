@@ -8,11 +8,10 @@ public class TokenResponseDto {
     private String refreshToken;
 
     //constructor
+    //пустой - для получения
+    public TokenResponseDto() { }
 
-    //пустой конструктор и сеттеры не нужен, т.к. мы
-    // не будем принимать никакие токены от клиента
-
-    //для генерации повторного токена после его истечения
+    //для генерации повторного токена после его истечения - для отправления
     public TokenResponseDto(String accessToken) {
         this.accessToken = accessToken;
     }
@@ -31,6 +30,16 @@ public class TokenResponseDto {
 
     public String getRefreshToken() {
         return refreshToken;
+    }
+
+    //сеттеры - для получения
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     //methods

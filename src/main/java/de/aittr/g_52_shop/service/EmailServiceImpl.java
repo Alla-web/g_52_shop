@@ -59,7 +59,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setFrom("umnyj.start@gmail.com");
             helper.setTo(user.getEmail());
             helper.setSubject("Registration");
-            helper.setText(text, "html");
+            helper.setText(text, true);
 
             sender.send(message);
         } catch (Exception e) {

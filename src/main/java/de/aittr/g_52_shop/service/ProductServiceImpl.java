@@ -97,9 +97,14 @@ public class ProductServiceImpl implements ProductService {
 //        return mappingService.mapEntityToDto(product);
 
         //более короткая, но сложная для понимания запись
-        return mappingService.mapEntityToDto(repository.findById(id)
-                .filter(Product::isActive)
-                .orElseThrow(() -> new ProductNoFoundException(id)));
+        return mappingService.mapEntityToDto(getActiveProductEntityById(id));
+    }
+
+    //метод поиска продукта по id, возвращающий не ДТО
+    public Product getActiveProductEntityById(Long id){
+        return repository.findById(id)
+        .filter(Product::isActive)
+                .orElseThrow(()-> new ProductNoFoundException(id));
     }
 
     @Override

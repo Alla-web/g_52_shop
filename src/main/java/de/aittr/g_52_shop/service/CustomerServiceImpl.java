@@ -1,6 +1,7 @@
 package de.aittr.g_52_shop.service;
 
 import de.aittr.g_52_shop.domain.dto.CustomerDto;
+import de.aittr.g_52_shop.domain.entity.Cart;
 import de.aittr.g_52_shop.domain.entity.Customer;
 import de.aittr.g_52_shop.domain.entity.Product;
 import de.aittr.g_52_shop.exception_handling.exceptions.CustomerNotFoundException;
@@ -8,7 +9,9 @@ import de.aittr.g_52_shop.exception_handling.exceptions.CustomerValidationExcept
 import de.aittr.g_52_shop.exception_handling.exceptions.ProductNoFoundException;
 import de.aittr.g_52_shop.repository.CustomerRepository;
 import de.aittr.g_52_shop.service.interfaces.CustomerService;
+import de.aittr.g_52_shop.service.interfaces.ProductService;
 import de.aittr.g_52_shop.service.mapping.CustomerMappingService;
+import jakarta.transaction.Transactional;
 import liquibase.exception.CustomChangeException;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +25,37 @@ public class CustomerServiceImpl implements CustomerService {
 
     //создаем поле репозитория и конструктор на него
     private final CustomerRepository repository;
+
     //создаём поле маппинга, для доступа к методам конвертации и добавл. его в конструктор
     private final CustomerMappingService mappingService;
 
-    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService) {
+    //сервисы должны пользоваться только своими репозиториями
+    private final ProductService productService;
+
+    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService, ProductService productService) {
         this.repository = repository;
         this.mappingService = mappingService;
+        this.productService = productService;
     }
 
     //methods
 
+    @Transactional //т.к. выполняется несколько SQL-запросов:
+    // сначала сохраняются данные в таблицу покупателя, а потом в таблицу корзина
     @Override
     public CustomerDto save(CustomerDto dto) {
         try {
             Customer entity = mappingService.mapDtoToEntity(dto);
+            Cart cart = new Cart();
+            cart.setCustomer(entity);
+            entity.setCart(cart);
+
             entity = repository.save(entity);
+
             return mappingService.mapEntityToDto(entity);
-        } catch (Exception e){
+
+        } catch (Exception e) {
+
             throw new CustomerValidationException(e);
         }
     }
@@ -64,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
         //более короткая, но сложная для понимания запись
         return mappingService.mapEntityToDto(repository.findById(id)
                 .filter(Customer::isActive)
-                .orElseThrow(()-> new CustomerNotFoundException(id)));
+                .orElseThrow(() -> new CustomerNotFoundException(id)));
     }
 
     @Override
@@ -96,18 +113,27 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public BigDecimal getCustomersCartTotalCost(Long id) {
+    public BigDecimal getCustomersCartTotalCost(Long customerId) {
         return null;
     }
 
     @Override
-    public BigDecimal getProductsAverageCost(Long id) {
+    public BigDecimal getProductsAverageCost(Long customerId) {
         return null;
     }
 
+    @Transactional
     @Override
     public void addProductToCart(Long customerId, Long productId) {
+        Customer customer = getActiveCustomerEntityById(customerId);
+        Product product = productService.getActiveProductEntityById(productId);
+        customer.getCart().addProduct(product);
+    }
 
+    private Customer getActiveCustomerEntityById(Long id) {
+       return repository.findById(id).
+                filter(Customer::isActive).
+                orElseThrow(() -> new CustomerNotFoundException(id));
     }
 
     @Override
@@ -116,7 +142,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void emptyCart(Long id) {
+    public void emptyCart(Long customerId) {
 
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    //задача этого контроллера - принимпать все запросы, которые касаются ваторизации
+    //задача этого контроллера - принимпать все запросы, которые касаются авторизации
 
     private final AuthService service;
 

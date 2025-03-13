@@ -89,10 +89,15 @@ public class CustomerController {
     }
 
     //Добавить товар в корзину покупателя по их идентификаторам (если оба активны)
-    //PUT -> http://IP-adress:8080/customers/5/add-product/5
+    //PUT потому что новых сущностей мы не добавляем,
+    // а по сути меняем состоняие имеющихся сущностей
+    //можно и POST, т.к. мы вносим новые данные в БД в таблицу связи продукта и корзины покупателя
+    //PUT -> localhost:8080/customers/5/add-product/5
     @PutMapping("/{customerId}/add-product/{productId}")
-    public void addProductToCart(@PathVariable Long customerId, Long productId) {
-
+    public void addProductToCart(
+            @PathVariable Long customerId,
+            @PathVariable Long productId) {
+        service.addProductToCart(customerId, productId);
     }
 
     //Удалить товар из корзины покупателя по их идентификаторам
